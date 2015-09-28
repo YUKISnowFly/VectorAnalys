@@ -7,6 +7,7 @@
 int main()
 {
 	const int
+		a = 10,
 		maxRange = 300,
 		blockNum = maxRange / 10;
 
