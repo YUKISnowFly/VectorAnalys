@@ -37,5 +37,8 @@
     <Text Include="Result.txt">
       <Filter>リソース ファイル</Filter>
     </Text>
+    <Text Include="Result2.txt">
+      <Filter>リソース ファイル</Filter>
+    </Text>
   </ItemGroup>
 </Project>

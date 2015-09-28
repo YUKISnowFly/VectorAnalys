@@ -7,15 +7,18 @@
 int main()
 {
 	const int
-		a = 10,
 		maxRange = 300,
-		blockNum = maxRange / 10;
+		blockSize = 10,
+		blockNum = (maxRange * 2) / blockSize;
 
 	File file;
 	Vector3 pointClouds[12000];
 	int countPoint = 0;
 	double aveY = 0.0, minX = 0.0, maxX = 0.0, minZ = 0.0, maxZ = 0.0;
 	Block block[blockNum * 2][blockNum * 2];
+
+	FILE* fpa;
+	fpa = fopen("Result2.txt", "w");
 
 	file.open("Result.txt");
 
@@ -33,15 +36,24 @@ int main()
 			//if (minZ > pointClouds[i].z) minZ = pointClouds[i].z;
 			//else if (maxZ < pointClouds[i].z) maxZ = pointClouds[i].z;
 			//aveY += pointClouds[i].y;
-			if (pointClouds[i].y > 5.0)
+			if (pointClouds[i].y > 3.0)
 			{
-				block[((int)pointClouds[i].x + maxRange) % blockNum][((int)pointClouds[i].z + maxRange) % blockNum].pointNum++;
+				block[((int)pointClouds[i].x + maxRange) / blockSize][((int)pointClouds[i].z + maxRange) / blockSize].pointNum++;
 				countPoint++;
 			}
 		}
 	}
 
 	file.close();
+
+	/*
+	for (int i = 0; i < 12; i++)
+	{
+		//printf("%d\n", (int)pointClouds[i].x + maxRange);
+		printf("x = %f, y = %f, z = %f\n", pointClouds[i].x, pointClouds[i].y, pointClouds[i].z);
+		printf("blockX = %d, blockZ = %d\n", ((int)pointClouds[i].x + maxRange) / blockSize, ((int)pointClouds[i].z + maxRange) / blockSize);
+	}
+	*/
 	
 	//aveY /= countPoint;
 
@@ -52,18 +64,22 @@ int main()
 			tempZ = ((int)pointClouds[i].z % blockNum) + blockNum;
 		block[tempX][tempZ].insert(aveY - pointClouds[i].y);
 	}*/
-	
-	FILE* fpa;
-	fpa = fopen("Result2.txt", "w");
 
 	for (int i = 0; i < blockNum; i++)
 	{
 		for (int j = 0; j < blockNum; j++)
 		{
-			if (block[i][j].pointNum > 5) fprintf(fpa, "x = %d, y = %d\n", i, j);
+			if (block[i][j].pointNum > 10)
+			{
+				//fprintf(fpa, "blockX = %d, blockY = %d\n", i, j);
+				fprintf(fpa, "*");
+			}
+			else if (i == blockNum / 2 && j == blockNum / 2)
+				fprintf(fpa, "o");
+			else fprintf(fpa, " ");
 		}
+		fprintf(fpa, "\n");
 	}
-	printf("%d\n", countPoint);
 	fclose(fpa);
 
 	getchar();
