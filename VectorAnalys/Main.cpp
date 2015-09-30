@@ -31,19 +31,19 @@ int main()
 		for (int i = 0; i < 12000; i++)
 		{
 			pointClouds[i] = fileR.getVec();
-			if (pointClouds[i].x == 0.0 &&
+			if (pointClouds[i].x == 0.0 &&	//点データが得られなかった時
 				pointClouds[i].y == 0.0 &&
 				pointClouds[i].z == 0.0)
 				break;
 			else
 			{
-				countPoint++;
+				countPoint++;	//点群データの数
 				//if (minX > pointClouds[i].x) minX = pointClouds[i].x;
 				//else if (maxX < pointClouds[i].x) maxX = pointClouds[i].x;
 				//if (minZ > pointClouds[i].z) minZ = pointClouds[i].z;
 				//else if (maxZ < pointClouds[i].z) maxZ = pointClouds[i].z;
 				//aveY += pointClouds[i].y;
-				if (pointClouds[i].y > 3.0)
+				if (pointClouds[i].y > 3.0)	//範囲を区分けしてその区内にyが一定以上の点がいくつあるか
 				{
 					block[((int)pointClouds[i].x + maxRange) / blockSize][((int)pointClouds[i].z + maxRange) / blockSize].pointNum++;
 				}
@@ -51,12 +51,12 @@ int main()
 		}
 	}
 
-	//オブジェクト位置の検索
+	//簡易危険マップ作製
 	for (int i = 0; i < blockNum; i++)
 	{
 		for (int j = 0; j < blockNum; j++)
 		{
-			if (block[i][j].pointNum > 10)
+			if (block[i][j].pointNum > 10)	//区内に一定以上の点が存在するとき
 			{
 				//fprintf(fpa, "blockX = %d, blockY = %d\n", i, j);
 				fileW.print("*");
@@ -75,6 +75,7 @@ int main()
 
 
 	fileR.close();
+	fileW.close();
 
 	/*
 	for (int i = 0; i < 12; i++)
@@ -95,27 +96,6 @@ int main()
 		block[tempX][tempZ].insert(aveY - pointClouds[i].y);
 	}*/
 
-	/*
-	//簡易危険マップ作製
-	for (int i = 0; i < blockNum; i++)
-	{
-		for (int j = 0; j < blockNum; j++)
-		{
-			if (block[i][j].pointNum > 10)
-			{
-				//fprintf(fpa, "blockX = %d, blockY = %d\n", i, j);
-				fileW.print("*");
-			}
-			else if (i == blockNum / 2 && j == blockNum / 2)
-				fileW.print("o");
-			else fileW.print(" ");
-		}
-		fileW.print("\n");
-	}
-	*/
-	
-
-	fileW.close();
 
 	getchar();
 	return 0;
