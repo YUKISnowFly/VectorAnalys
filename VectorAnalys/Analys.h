@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "FileRead.h"
+#include "File.h"
 
 class Analys
 {

@@ -4,15 +4,22 @@ private:
 	FILE* fp;
 
 public:
-	void open(char* str);
+	void openRead(char* str);
+	void openWrite(char* str);
 	void print();
 	void close();
 	Vector3 getVec();
+	void print(char* str);
 };
 
-void File::open(char* str)
+void File::openRead(char* str)
 {
 	fp = fopen(str, "r");
+}
+
+void File::openWrite(char* str)
+{
+	fp = fopen(str, "w");
 }
 
 Vector3 File::getVec()
@@ -42,6 +49,11 @@ Vector3 File::getVec()
 	}
 
 	return vec;
+}
+
+void File::print(char* str)
+{
+	fprintf(fp, str);
 }
 
 void File::close()

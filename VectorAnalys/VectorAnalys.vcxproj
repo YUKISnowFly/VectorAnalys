@@ -81,7 +81,7 @@
   <ItemGroup>
     <ClInclude Include="Analys.h" />
     <ClInclude Include="Block.h" />
-    <ClInclude Include="FileRead.h" />
+    <ClInclude Include="File.h" />
     <ClInclude Include="Fps.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>

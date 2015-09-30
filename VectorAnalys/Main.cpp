@@ -3,41 +3,41 @@
 #include <time.h>
 #include "vector.h"
 #include "Fps.h"
-#include "FileRead.h"
+#include "File.h"
 #include "Block.h"
 
 int main()
 {
 	const int
 		maxRange = 300,
-		blockSize = 10,
-		blockNum = (maxRange * 2) / blockSize;
+		blockSize = 5,
+		blockNum = (maxRange * 2) / blockSize,
+		frame = 60;
 
-	File file;
-	Vector3 pointClouds[12000];
-	int countPoint = 0;
+	File fileR, fileW;
+	Vector3 pointClouds[12000];		//点群データ
+	int countPoint = 0;				//点群の総数
 	double aveY = 0.0, minX = 0.0, maxX = 0.0, minZ = 0.0, maxZ = 0.0;
-	Block block[blockNum * 2][blockNum * 2];
+	Block block[blockNum][blockNum];
 	Fps fps;
 
-	FILE* fpa;
-	fpa = fopen("Result2.txt", "w");
-
-	file.open("Result.txt");
+	fileR.openRead("Result.txt");
+	fileW.openWrite("Result3.txt");
 
 	fps.Start();
 
-	for (int j = 0; j < 60; j++)
+	for (int j = 0; j < frame; j++)
 	{
 		for (int i = 0; i < 12000; i++)
 		{
-			pointClouds[i] = file.getVec();
+			pointClouds[i] = fileR.getVec();
 			if (pointClouds[i].x == 0.0 &&
 				pointClouds[i].y == 0.0 &&
 				pointClouds[i].z == 0.0)
 				break;
 			else
 			{
+				countPoint++;
 				//if (minX > pointClouds[i].x) minX = pointClouds[i].x;
 				//else if (maxX < pointClouds[i].x) maxX = pointClouds[i].x;
 				//if (minZ > pointClouds[i].z) minZ = pointClouds[i].z;
@@ -46,16 +46,35 @@ int main()
 				if (pointClouds[i].y > 3.0)
 				{
 					block[((int)pointClouds[i].x + maxRange) / blockSize][((int)pointClouds[i].z + maxRange) / blockSize].pointNum++;
-					countPoint++;
 				}
 			}
 		}
 	}
+
+	//オブジェクト位置の検索
+	for (int i = 0; i < blockNum; i++)
+	{
+		for (int j = 0; j < blockNum; j++)
+		{
+			if (block[i][j].pointNum > 10)
+			{
+				//fprintf(fpa, "blockX = %d, blockY = %d\n", i, j);
+				fileW.print("*");
+			}
+			else if (i == blockNum / 2 && j == blockNum / 2)
+				fileW.print("o");
+			else fileW.print(" ");
+		}
+		fileW.print("\n");
+	}
+
 	fps.End();
 
-	printf("60F = %fs\n", fps.Get());
+	printf("%dF = %fs\n", frame, fps.Get());
+	printf("1F = %fs\n", fps.Get() / frame);
 
-	file.close();
+
+	fileR.close();
 
 	/*
 	for (int i = 0; i < 12; i++)
@@ -85,17 +104,18 @@ int main()
 			if (block[i][j].pointNum > 10)
 			{
 				//fprintf(fpa, "blockX = %d, blockY = %d\n", i, j);
-				fprintf(fpa, "*");
+				fileW.print("*");
 			}
 			else if (i == blockNum / 2 && j == blockNum / 2)
-				fprintf(fpa, "o");
-			else fprintf(fpa, " ");
+				fileW.print("o");
+			else fileW.print(" ");
 		}
-		fprintf(fpa, "\n");
+		fileW.print("\n");
 	}
 	*/
+	
 
-	fclose(fpa);
+	fileW.close();
 
 	getchar();
 	return 0;
